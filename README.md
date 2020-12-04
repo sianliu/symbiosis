@@ -16,11 +16,13 @@ Follow these steps to setup Node.js on your machine.
 
 ## Usage example
 
-You can add your name to the user list and display all users. Give it a spin.  
+Features available: add user, delete user, list user, and edit user.
 
 ![Add New User](add_new_user.jpg)
 
 ![User list](user_list.jpg)
+
+![Edit User](edit_user.jpg)
 
 
 ## Development setup
