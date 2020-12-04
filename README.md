@@ -34,6 +34,7 @@ Follow these steps to run the crud app on your local machine.
 2. cd symbiosis/ && cd crud-mysql/
 3. npm install
 4. node app.js
+5. open browser http://18.136.199.37:3000/
 ```
 
 ## Meta
