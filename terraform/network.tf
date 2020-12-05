@@ -32,13 +32,41 @@ resource "aws_security_group" "web-tier-sg" {
   description = "Web security group"
   vpc_id      = aws_default_vpc.default.id
 
-  ingress {
-    description = "Allow HTTP traffic from internet"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  ingress = [
+    {
+      description = "Allow HTTP traffic from internet"
+      from_port   = 80
+      to_port     = 80
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = []
+      prefix_list_ids  = []
+      self             = false
+      security_groups  = []
+    },
+    {
+      description = "SSH MGMT"
+      from_port   = 22
+      to_port     = 22
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = []
+      prefix_list_ids  = []
+      self             = false
+      security_groups  = []
+    },
+    {
+      description = "crud app access"
+      from_port   = 3000
+      to_port     = 3000
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = []
+      prefix_list_ids  = []
+      self             = false
+      security_groups  = []
+    }
+  ]
 
   egress {
     from_port   = 0
@@ -78,10 +106,10 @@ resource "aws_security_group" "db-tier-sg" {
   }
 }
 
-# Public URL to access CRUD app
-resource "aws_route53_zone" "primary" {
-  name = "tbicommons.io"
-}
+//# Public URL to access CRUD app
+//resource "aws_route53_zone" "primary" {
+//  name = "tbicommons.io"
+//}
 
 # Creates a NAT GW in each public subnet
 resource "aws_nat_gateway" "nat-gw-public-subnet-1" {
