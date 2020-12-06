@@ -1,21 +1,5 @@
 #----- symbiosis/network.tf -----#
 
-data "aws_route53_zone" "selected" {
-  name = "tbicommons.io"
-}
-
-resource "aws_route53_record" "www" {
-  name    = "www"
-  type    = "A"
-  zone_id = data.aws_route53_zone.selected.zone_id
-
-  alias {
-    evaluate_target_health = false
-    name                   = aws_lb.lb.dns_name
-    zone_id                = aws_lb.lb.zone_id
-  }
-}
-
 # Manages the default vpc
 resource "aws_default_vpc" "default" {
   tags = {
@@ -42,85 +26,6 @@ resource "aws_subnet" "private_subnet_2" {
   vpc_id            = aws_default_vpc.default.id
 }
 
-# Creates web tier security group resource
-resource "aws_security_group" "web-tier-sg" {
-  name        = "web-tier-sg"
-  description = "Web security group"
-  vpc_id      = aws_default_vpc.default.id
-
-  ingress = [
-    {
-      description      = "Allow HTTP traffic from internet"
-      from_port        = 80
-      to_port          = 80
-      protocol         = "tcp"
-      cidr_blocks      = ["0.0.0.0/0"]
-      ipv6_cidr_blocks = []
-      prefix_list_ids  = []
-      self             = false
-      security_groups  = []
-    },
-    {
-      description      = "SSH MGMT"
-      from_port        = 22
-      to_port          = 22
-      protocol         = "tcp"
-      cidr_blocks      = ["0.0.0.0/0"]
-      ipv6_cidr_blocks = []
-      prefix_list_ids  = []
-      self             = false
-      security_groups  = []
-    },
-    {
-      description      = "crud app access"
-      from_port        = 3000
-      to_port          = 3000
-      protocol         = "tcp"
-      cidr_blocks      = ["0.0.0.0/0"]
-      ipv6_cidr_blocks = []
-      prefix_list_ids  = []
-      self             = false
-      security_groups  = []
-    }
-  ]
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "web-tier-sg"
-  }
-}
-
-# Creates database tier security group resource
-resource "aws_security_group" "db-tier-sg" {
-  name        = "db-tier-sg"
-  description = "DB security group"
-  vpc_id      = aws_default_vpc.default.id
-
-  ingress {
-    description     = "MySQL Access for App"
-    from_port       = 3306
-    protocol        = "tcp"
-    security_groups = [aws_security_group.web-tier-sg.id]
-    to_port         = 3306
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "db-tier-sg"
-  }
-}
 
 # Creates a NAT GW in each public subnet
 resource "aws_nat_gateway" "nat-gw-public-subnet-1" {
@@ -138,42 +43,6 @@ resource "aws_nat_gateway" "nat-gw-public-subnet-2" {
 
   tags = {
     Name = "Public subnet 2 NAT GW"
-  }
-}
-
-# EIP for NAT gateway
-resource "aws_eip" "eip" {
-  count = 2
-  vpc   = true
-}
-
-# Creates an application load balancer
-resource "aws_lb" "lb" {
-  name               = "lb"
-  internal           = false
-  load_balancer_type = "application"
-  security_groups    = [aws_security_group.web-tier-sg.id]
-  subnets            = ["subnet-0235ab71bb618266f", "subnet-0cb5600808b3dbe9e"]
-
-  access_logs {
-    bucket  = aws_s3_bucket.symbiosis-lb-access-logs-bucket.id
-    enabled = true
-  }
-
-  tags = {
-    Environment = "test"
-  }
-}
-
-# NLB listens on port 80
-resource "aws_lb_listener" "front_end" {
-  load_balancer_arn = aws_lb.lb.arn
-  port              = "80"
-  protocol          = "HTTP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.web-servers-tg.arn
   }
 }
 
