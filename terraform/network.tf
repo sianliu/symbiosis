@@ -1,5 +1,21 @@
 #----- symbiosis/network.tf -----#
 
+data "aws_route53_zone" "selected" {
+  name = "tbicommons.io"
+}
+
+resource "aws_route53_record" "www" {
+  name    = "www"
+  type    = "A"
+  zone_id = data.aws_route53_zone.selected.zone_id
+
+  alias {
+    evaluate_target_health = false
+    name                   = aws_lb.lb.dns_name
+    zone_id                = aws_lb.lb.zone_id
+  }
+}
+
 # Manages the default vpc
 resource "aws_default_vpc" "default" {
   tags = {
@@ -106,11 +122,6 @@ resource "aws_security_group" "db-tier-sg" {
   }
 }
 
-//# Public URL to access CRUD app
-//resource "aws_route53_zone" "primary" {
-//  name = "tbicommons.io"
-//}
-
 # Creates a NAT GW in each public subnet
 resource "aws_nat_gateway" "nat-gw-public-subnet-1" {
   allocation_id = aws_eip.eip[0].id
@@ -189,3 +200,4 @@ resource "aws_route_table_association" "symbiosis-private-subnet-2" {
   subnet_id      = aws_subnet.private_subnet_2.id
   route_table_id = aws_route_table.symbiosis-private-rt.id
 }
+

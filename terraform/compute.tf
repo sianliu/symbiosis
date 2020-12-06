@@ -1,5 +1,9 @@
 #----- symbiosis/compute.tf -----#
 
+data "aws_ami" "crud-app" {
+  owners = ["self"]
+}
+
 # Creates a target group for web servers
 resource "aws_lb_target_group" "web-servers-tg" {
   name     = "web-servers-tg"
@@ -10,10 +14,12 @@ resource "aws_lb_target_group" "web-servers-tg" {
 
 # For autoscaling group
 resource "aws_launch_template" "symbiosis" {
-  name_prefix   = "symbiosis"
-  image_id      = "ami-0d728fd4e52be968f"
-  key_name      = "my-govtech-aws"
-  instance_type = "t3.micro"
+  name_prefix = "symbiosis"
+  image_id    = data.aws_ami.crud-app.id
+  //  image_id      = "ami-0d728fd4e52be968f"
+  key_name               = "my-govtech-aws"
+  instance_type          = "t3.micro"
+  vpc_security_group_ids = [aws_security_group.web-tier-sg.id]
 }
 
 resource "aws_autoscaling_group" "bar" {
