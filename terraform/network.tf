@@ -34,33 +34,33 @@ resource "aws_security_group" "web-tier-sg" {
 
   ingress = [
     {
-      description = "Allow HTTP traffic from internet"
-      from_port   = 80
-      to_port     = 80
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
+      description      = "Allow HTTP traffic from internet"
+      from_port        = 80
+      to_port          = 80
+      protocol         = "tcp"
+      cidr_blocks      = ["0.0.0.0/0"]
       ipv6_cidr_blocks = []
       prefix_list_ids  = []
       self             = false
       security_groups  = []
     },
     {
-      description = "SSH MGMT"
-      from_port   = 22
-      to_port     = 22
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
+      description      = "SSH MGMT"
+      from_port        = 22
+      to_port          = 22
+      protocol         = "tcp"
+      cidr_blocks      = ["0.0.0.0/0"]
       ipv6_cidr_blocks = []
       prefix_list_ids  = []
       self             = false
       security_groups  = []
     },
     {
-      description = "crud app access"
-      from_port   = 3000
-      to_port     = 3000
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
+      description      = "crud app access"
+      from_port        = 3000
+      to_port          = 3000
+      protocol         = "tcp"
+      cidr_blocks      = ["0.0.0.0/0"]
       ipv6_cidr_blocks = []
       prefix_list_ids  = []
       self             = false
@@ -143,6 +143,11 @@ resource "aws_lb" "lb" {
   load_balancer_type = "application"
   security_groups    = [aws_security_group.web-tier-sg.id]
   subnets            = ["subnet-0235ab71bb618266f", "subnet-0cb5600808b3dbe9e"]
+
+  access_logs {
+    bucket  = aws_s3_bucket.symbiosis-lb-access-logs-bucket.id
+    enabled = true
+  }
 
   tags = {
     Environment = "test"
