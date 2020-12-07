@@ -32,10 +32,7 @@ jobs:
       run: npm install
       working-directory: ${{ env.working-directory }}
 
-    - name: check dir
-      run: ls -al
+    - name: Run app
+      run: node app.js
       working-directory: ${{ env.working-directory }}
-
-    - name: Check express installed
-      run: express --version
 
