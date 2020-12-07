@@ -24,8 +24,8 @@ data "aws_iam_policy_document" "symbiosis-bucket-policy" {
     resources = ["${aws_s3_bucket.symbiosis-lb-access-logs-bucket.arn}/*"]
 
     principals {
-      type        = "AWS"
-      identifiers = ["342372301491"]
+      type        = "*"
+      identifiers = ["*"]
     }
   }
 }
