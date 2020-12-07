@@ -37,5 +37,5 @@ jobs:
       working-directory: ${{ env.working-directory }}
 
     - name: Check express installed
-      run: express -v
+      run: express --version
 
