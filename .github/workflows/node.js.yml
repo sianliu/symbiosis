@@ -13,6 +13,8 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    env:
+      working-directory: ./crud-mysql
 
     strategy:
       matrix:
@@ -26,10 +28,13 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - run: cd crud-mysql
-
-    - name: Install dependencies
+    - name: Installing Packages
       run: npm install
+      working-directory: ${{ env.working-directory }}
+
+    - name: check dir
+      run: ls -al
+      working-directory: ${{ env.working-directory }}
 
     - name: Check express installed
       run: express -v
