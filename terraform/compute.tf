@@ -26,8 +26,8 @@ resource "aws_lb_listener" "front_end" {
 
 # For autoscaling group
 resource "aws_launch_template" "symbiosis" {
-  name_prefix = "symbiosis"
-  image_id    = data.aws_ami.crud-app.id
+  name_prefix            = "symbiosis"
+  image_id               = data.aws_ami.crud-app.id
   key_name               = "my-govtech-aws"
   instance_type          = "t3.micro"
   vpc_security_group_ids = [aws_security_group.web-tier-sg.id]
