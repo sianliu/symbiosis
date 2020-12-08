@@ -18,11 +18,11 @@ Follow these steps to setup Node.js on your machine.
 
 Features available: add user, delete user, list user, and edit user.
 
-![Add New User](add_new_user.jpg)
+![Add New User](images/add_new_user.jpg)
 
-![User list](user_list.jpg)
+![User list](images/user_list.jpg)
 
-![Edit User](edit_user.jpg)
+![Edit User](images/edit_user.jpg)
 
 
 ## Development setup
