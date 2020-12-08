@@ -6,7 +6,7 @@ data "aws_ami_ids" "crud-app" {
 
   filter {
     name   = "name"
-    values = ["symbiosis-crud-app-2020-12-06"]
+    values = ["symbiosis-crud-app-*"]
   }
 }
 
