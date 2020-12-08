@@ -15,6 +15,10 @@ resource "aws_db_instance" "primary" {
   backup_retention_period = 5
   vpc_security_group_ids  = [aws_security_group.db-tier-sg.id]
   db_subnet_group_name    = aws_db_subnet_group.default.name
+
+  tags = {
+    Name = "terraform-rds-primary"
+  }
 }
 
 resource "aws_db_instance" "read-replica" {
@@ -30,6 +34,10 @@ resource "aws_db_instance" "read-replica" {
   replicate_source_db    = aws_db_instance.primary.identifier
   vpc_security_group_ids = [aws_security_group.db-tier-sg.id]
   skip_final_snapshot    = true
+
+  tags = {
+    Name = "terraform-rds-read-replica"
+  }
 }
 
 resource "aws_db_subnet_group" "default" {
@@ -37,6 +45,6 @@ resource "aws_db_subnet_group" "default" {
   subnet_ids = [aws_subnet.private_subnet_1.id, aws_subnet.private_subnet_2.id]
 
   tags = {
-    Name = "My DB subnet group"
+    Name = "terraform-db-subnet-group"
   }
 }

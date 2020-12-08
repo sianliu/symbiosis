@@ -33,7 +33,7 @@ resource "aws_nat_gateway" "nat-gw-public-subnet-1" {
   subnet_id     = "subnet-0235ab71bb618266f"
 
   tags = {
-    Name = "Public subnet 1 NAT GW"
+    Name = "terraform-public-subnet-1"
   }
 }
 
@@ -42,7 +42,7 @@ resource "aws_nat_gateway" "nat-gw-public-subnet-2" {
   subnet_id     = "subnet-0cb5600808b3dbe9e"
 
   tags = {
-    Name = "Public subnet 2 NAT GW"
+    Name = "terraform-public-subnet-2"
   }
 }
 
@@ -56,7 +56,7 @@ resource "aws_route_table" "symbiosis-private-rt" {
   }
 
   tags = {
-    Name = "private-rt"
+    Name = "terraform-private-rt"
   }
 }
 

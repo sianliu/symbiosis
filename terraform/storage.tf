@@ -9,7 +9,7 @@ resource "aws_s3_bucket" "symbiosis-lb-access-logs-bucket" {
   }
 
   tags = {
-    Name = "symbiosis-lb-access-logs-bucket"
+    Name = "terraform-lb-access-logs-bucket"
   }
 }
 

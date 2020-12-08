@@ -1,8 +1,19 @@
 #----- symbiosis/compute.tf -----#
 
-data "aws_ami" "crud-app" {
-  owners = ["self"]
+# Use this data source when working with multiple AMIs ie. Packer
+data "aws_ami_ids" "crud-app" {
+  owners = ["342372301491"]
+
+  filter {
+    name   = "name"
+    values = ["symbiosis-crud-app-2020-12-06"]
+  }
 }
+
+//data "aws_ami" "crud-app" {
+//  owners      = ["self"]
+//  most_recent = true
+//}
 
 # Creates a target group for web servers
 resource "aws_lb_target_group" "web-servers-tg" {
@@ -26,11 +37,16 @@ resource "aws_lb_listener" "front_end" {
 
 # For autoscaling group
 resource "aws_launch_template" "symbiosis" {
-  name_prefix            = "symbiosis"
-  image_id               = data.aws_ami.crud-app.id
+  name_prefix = "symbiosis"
+  image_id    = "ami-0fdd6231271034d0e"
+  //  image_id               = data.aws_ami.crud-app.id
   key_name               = "my-govtech-aws"
   instance_type          = "t3.micro"
   vpc_security_group_ids = [aws_security_group.web-tier-sg.id]
+
+  tags = {
+    Name = "terraform-launch-template"
+  }
 }
 
 resource "aws_autoscaling_group" "bar" {
@@ -66,7 +82,7 @@ resource "aws_lb" "lb" {
   }
 
   tags = {
-    Environment = "test"
+    Name = "terraform-lb"
   }
 }
 
@@ -120,7 +136,7 @@ resource "aws_security_group" "web-tier-sg" {
   }
 
   tags = {
-    Name = "web-tier-sg"
+    Name = "terraform-web-tier-sg"
   }
 }
 
@@ -146,6 +162,6 @@ resource "aws_security_group" "db-tier-sg" {
   }
 
   tags = {
-    Name = "db-tier-sg"
+    Name = "terraform-db-tier-sg"
   }
 }
